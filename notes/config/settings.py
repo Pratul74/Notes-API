@@ -15,7 +15,7 @@ SECRET_KEY = 'django-insecure-3on1e21zl-hw+d6a9&hbhu6e@r&-=vr2r!7m0r+=b#j7muht5)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -30,7 +30,6 @@ INSTALLED_APPS = [
     'users',
     'rest_framework',
     'records',
-    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -69,8 +68,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mydb',
+        'USER': 'pratul',
+        'PASSWORD': 'password',
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 
@@ -112,8 +115,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 AUTH_USER_MODEL='users.User'
-
-CORS_ALLOW_ALL_ORIGINS=True
 
 REST_FRAMEWORK={
     'DEFAULT_AUTHENTICATION_CLASSES':(

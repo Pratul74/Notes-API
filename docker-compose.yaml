@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    networks:
+      - three-tier
+    restart: always
+    depends_on:
+      - django
+
+  db:
+    container_name: db
+    image: postgres:15
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: pratul
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    networks:
+      - three-tier
+    volumes:
+      - postgres-data:/var/lib/postresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pratul -d mydb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  django:
+    container_name: django
+    build:
+      context: ./notes
+    ports:
+      - "8000:8000"
+    networks:
+      - three-tier
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 && python manage.py migrate --noinput
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+volumes:
+  postgres-data:
+networks:
+  three-tier:
+
+
